@@ -14,6 +14,8 @@ def index():
         return render_template("mainpage.html")
 
 
+
+
 @app.route('/reg')
 def reg():
     log = ' '
