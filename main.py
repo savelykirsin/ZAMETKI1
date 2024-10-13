@@ -14,8 +14,6 @@ def index():
         return render_template("mainpage.html")
 
 
-
-
 @app.route('/reg')
 def reg():
     log = ' '
@@ -66,15 +64,23 @@ def logout():
 def text():
     return render_template("text.html")
 
-
 @app.route('/write', methods=["POST"])
 def write():
-    t = request.form.get('text')
-    name = request.form.get('name')
-    c = {'name': name, 'text': t}
-    for i in a:
-        if i['login'] == session['login']:
-            i['t'].insert(0, c)
+    t = request.form.get('text', False)
+    name = request.form.get('name', False)
+    if not name:
+        return render_template('emptynote.html', title='Добавление заметки',
+                               message='Укажите название заметки', text=text)
+
+    if not t:
+        return render_template('emptynote.html', title='Добавление заметки',
+                               message='Укажите текст заметки', name=name)
+    else:
+        c = {'name': name, 'text': t}
+        for i in a:
+            if i['login'] == session['login']:
+                i['t'].insert(0, c)
+
     return redirect('/')
 
 
