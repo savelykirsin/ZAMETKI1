@@ -1,3 +1,5 @@
+from pyexpat.errors import messages
+
 from flask import Flask, session, redirect, render_template, request
 
 app = Flask(__name__)
@@ -26,6 +28,11 @@ def save():
     log = request.form['login']
     session.get('login', log)
     password = request.form['password']
+    if not log:
+        return render_template('registration.html', message='Empty login')
+
+    if not password:
+        return render_template('registration.html', log=log, message='Empty password')
     x = {'login': log, 'password': password, 't': []}
     a.insert(0, x)
     session['auth'] = True
@@ -42,9 +49,26 @@ def login():
 
 @app.route('/auth', methods=['POST'])
 def auth():
-    log = request.form['login']
-    password = request.form['password']
+    log = request.form.get('login', False)
+    password = request.form.get('password', False)
+
+    print(log)
+
+    if not log:
+        return render_template('emptyregistration.html', title='REGISTRATION',
+                               message='Укажите логин', password=password)
+
+    if not password:
+        return render_template('emptyregistration.html', title='REGISTRATION',
+                               message='Укажите пароль', log=log)
     session.get('login', log)
+
+    for i in a:
+        if i['login'] == log and i['password'] == password:
+            session['auth'] = True
+            session['login'] = log
+            return redirect('/')
+        return render_template('loginerror.html', log=log, password=password)
 
     for i in a:
         if i['login'] == log and i['password'] == password:
@@ -64,6 +88,7 @@ def logout():
 def text():
     return render_template("text.html")
 
+
 @app.route('/write', methods=["POST"])
 def write():
     t = request.form.get('text', False)
@@ -75,11 +100,10 @@ def write():
     if not t:
         return render_template('emptynote.html', title='Добавление заметки',
                                message='Укажите текст заметки', name=name)
-    else:
-        c = {'name': name, 'text': t}
-        for i in a:
-            if i['login'] == session['login']:
-                i['t'].insert(0, c)
+    c = {'name': name, 'text': t}
+    for i in a:
+        if i['login'] == session['login']:
+            i['t'].insert(0, c)
 
     return redirect('/')
 

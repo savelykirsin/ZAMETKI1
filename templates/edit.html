@@ -23,10 +23,10 @@
     {% if i['login'] == login %}
     <img src="https://img.icons8.com/?size=100&id=86374&format=png&color=000000" width="16" height="16"> </img>
     <label>Название:</label>
-    <li class="bi bi-0-circle-fill"><input type="name" name="name" value={{i['t'][id]['name']}}></li>
+    <li class="bi bi-0-circle-fill"><textarea type="name" name="name">{{i['t'][id]['name']}}</textarea></li>
     <img src="https://img.icons8.com/?size=100&id=86374&format=png&color=000000" width="16" height="16"> </img>
     <label>Текст:</label>
-    <li class="bi bi-0-circle-fill"><input type="text" name="text" value={{i['t'][id]['text']}}></li>
+    <li class="bi bi-0-circle-fill"><textarea type="text" name="text">{{i['t'][id]['text']}}</textarea></li>
     {% endif %}
     {% endfor %}
 
